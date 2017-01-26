@@ -1,72 +1,90 @@
-// Arduino code for example Arduino LED On/Off BLE.
-// Evothings AB, 2014
+int led = 13;
 
-// Include BLE files.
-#include <SPI.h>
-#include <boards.h>
-#include <RBL_nRF8001.h>
-#include <services.h>
 
-// Define input/output pins
-#define INPUT_PIN A0
-#define LED_PIN 2
 
-// This function is called only once, at reset.
-void setup()
-{
-	// Enable serial debug.
-	Serial.begin(9600);
-	Serial.println("Arduino EasyBLE example started");
-	Serial.println("Serial rate set to 9600");
 
-	// Enable output.
-	pinMode(LED_PIN, OUTPUT);
+char inChar;
 
-	// Turn off LED.
-	digitalWrite(LED_PIN, LOW);
 
-	// Writing to an analog input pin sets baseline for later input.
-	digitalWrite(INPUT_PIN, HIGH);
 
-	// Default pins set to 9 and 8 for REQN and RDYN
-	// Set your REQN and RDYN here before ble_begin() if you need
-	//ble_set_pins(3, 2);
 
-	// Initialize BLE library.
-	ble_begin();
+// the setup routine runs once when you press reset:
 
-	// Set a custom BLE name.
-	ble_set_name("arduinoble");
+void setup() {
 
-	Serial.println("ble_begin done!");
+  // initialize the digital pin as an output and turn off 
 
-	// Turn on LED.
-	digitalWrite(LED_PIN, HIGH);
+  pinMode(led, OUTPUT);
+
+  digitalWrite(led, LOW);
+
+  
+
+  // initialize serial port at a baud rate of 115200 bps
+
+  Serial.begin(9600);
+
+  delay(100);
+
+  Serial.println("start");
+
 }
 
-// This function is called continuously, after setup() completes.
-void loop()
-{
-	// If there's any input...
-	while (ble_available())
-	{
-		// Read input.
-		int c = ble_read();
-		Serial.println("Got input:");
-		if (c != 0)
-		{
-			// Non-zero input means "turn on LED".
-			Serial.println("  on");
-			digitalWrite(LED_PIN, HIGH);
-		}
-		else
-		{
-			// Input value zero means "turn off LED".
-			Serial.println("  off");
-			digitalWrite(LED_PIN, LOW);
-		}
-	}
 
-	// Process BLE events.
-	ble_do_events();
+
+
+void loop() {
+
+  
+
+  inChar = '\0';
+
+  
+
+  while (Serial.available()) {
+
+    
+
+    // get the new byte:
+
+    inChar = (char)Serial.read();
+
+  }
+
+  
+
+  //Serial.print("inChar= ");Serial.println(inChar);
+
+  //char byteParsed = parseResponse(inChar);
+
+  
+
+  if (inChar == '1') { // compare received data
+
+    digitalWrite(led, HIGH); // turn on light
+
+  } else if (inChar == '0') {
+
+    digitalWrite(led, LOW);  // turn off light
+
+  }
+
+
+
+
+  delay(10); 
+
+}
+
+
+
+
+// the characters sent to Arduino as String are interpreted as ASCII,
+
+// we decrease 48 to return to ASCII range 
+
+char parseResponse(char received) {
+
+  return received - 48;
+
 }
